@@ -1,0 +1,17 @@
+<div class="container my-5">
+    <div class="d-flex justify-content-center my-3">
+        <div *ngIf="PAGE == 0" id="Page0">
+            <div class="fw-bold fs-1">
+                Welcome Traveller.
+            </div>
+        </div>
+        <div *ngIf="PAGE == 1" id="Page1">
+            <div class="fs-3">
+                This Might not be your place to come. But its your DESTINY to come here.
+            </div>
+        </div>
+    </div>
+    <div class="d-flex justify-content-center my-3">
+        <button (click)="nextPage()" class="btn btn-success">Next</button>
+        </div>
+</div>

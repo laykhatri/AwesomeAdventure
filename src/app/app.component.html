@@ -1,8 +1,11 @@
 <div class="container">
   <div class="d-flex justify-content-center">
     <div class="fw-bold fs-1">
-
       {{title}}
     </div>
   </div>
+</div>
+
+<div class="container gameboard">
+  <app-tutorial [PAGE]="TUTORIAL.page" *ngIf="!TUTORIAL.isTutorialDone"></app-tutorial>
 </div>
