@@ -1,13 +1,28 @@
 <div class="container">
   <div class="d-flex justify-content-center">
     <div class="fw-bold fs-1">
-      {{title}}
+      {{ title }}
     </div>
   </div>
 </div>
 
 <div class="container gameboard">
-  <app-tutorial [PAGE]="TUTORIAL.page" (changePage)="pageChanged" (EndTutorial)="EndOfTutorial()" *ngIf="!TUTORIAL.isTutorialDone"></app-tutorial>
+  <app-tutorial
+    [PAGE]="TUTORIAL.page"
+    (changePage)="(pageChanged)"
+    (EndTutorial)="EndOfTutorial()"
+    *ngIf="!TUTORIAL.isTutorialDone"
+  ></app-tutorial>
 
-  
+  <div *ngIf="TUTORIAL.isTutorialDone" class="gamearea my-5">
+    <div class="container my-3">
+      <div class="d-flex justify-content-center">
+        <div class="fw-bold fs-3">Level: {{ getCurrentLevel() }}</div>
+      </div>
+    </div>
+
+    <app-monster-page (MonsterDead)="monsterDead()" [MonsterHealth]="getCurrentMonsterHealth()" [MONSTER]="getRandomMonster()"></app-monster-page>
+
+
+  </div>
 </div>
