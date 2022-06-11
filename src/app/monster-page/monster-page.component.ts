@@ -10,6 +10,7 @@ export class MonsterPageComponent implements OnInit, AfterContentChecked {
   @Input() MONSTER!:string;
   @Input() MonsterHealth!:number;
   @Output() MonsterDead = new EventEmitter<boolean>();
+  @Input() HitPower!:number;
 
   currentHealth:number = 0;
   
@@ -45,7 +46,7 @@ export class MonsterPageComponent implements OnInit, AfterContentChecked {
 
   attack()
   {
-    this.currentHealth -= 10;
+    this.currentHealth -= this.HitPower;
     if(this.currentHealth <= 0)
     {
       this.MonsterDead.emit(true);

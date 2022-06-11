@@ -1,4 +1,9 @@
-import { Component, HostListener, AfterContentInit, ViewChild } from "@angular/core";
+import {
+  Component,
+  HostListener,
+  AfterContentInit,
+  ViewChild,
+} from "@angular/core";
 import { monsters } from "./_helper/monster.helper";
 import { player } from "./_helper/player.helper";
 import { tutorial } from "./_helper/tutorial.helper";
@@ -12,17 +17,19 @@ import { MonsterPageComponent } from "./monster-page/monster-page.component";
 export class AppComponent implements AfterContentInit {
   // https://www.flaticon.com/search?word=monster
 
-  @ViewChild(MonsterPageComponent) monster:any;
+  @ViewChild(MonsterPageComponent) monster: any;
 
   title = "Awesome Adventure";
 
   TUTORIAL!: tutorial;
   MONSTERS!: monsters;
-  PLAYER!: player
+  PLAYER!: player;
 
-  isCurrentMonsterDead: boolean= true;
-  currentMonster:string = "";
-  lastMonster:string = "";
+  isCurrentMonsterDead: boolean = true;
+  currentMonster: string = "";
+  lastMonster: string = "";
+
+  nextPowerUpgrade: number = 10;
 
   constructor() {
     if (localStorage.getItem("tutorial") != null) {
@@ -30,23 +37,38 @@ export class AppComponent implements AfterContentInit {
     } else {
       this.TUTORIAL = new tutorial();
     }
-  }
-  ngAfterContentInit(): void {
-    if(this.TUTORIAL.isTutorialDone){
-      this.MONSTERS = new monsters();
+
+    if (localStorage.getItem("player") != null) {
+      this.PLAYER = JSON.parse(localStorage.getItem("player")!);
+      this.populatePlayerProgress();
+    } else {
       this.PLAYER = new player();
     }
   }
-  
+  ngAfterContentInit(): void {
+    this.MONSTERS = new monsters();
+    if (
+      this.TUTORIAL.isTutorialDone &&
+      localStorage.getItem("player") == null
+    ) {
+      this.PLAYER = new player();
+    }
+  }
+
   @HostListener("window:keyup", ["$event"])
   onKeyUp(event: KeyboardEvent) {
-    if(this.TUTORIAL.isTutorialDone)
-    {
-      if(event.key == "H" || event.key == "h")
-      {
+    if (this.TUTORIAL.isTutorialDone) {
+      if (event.key == "H" || event.key == "h") {
         this.monster.attack();
+      } else if (event.key == "U" || event.key == "u") {
+        this.powerUpgrade();
       }
+    }
+  }
 
+  populatePlayerProgress() {
+    for (let i = 1; i < this.PLAYER.powerLevel; i++) {
+      this.nextPowerUpgrade += this.getnextPowerUpgrade() * 0.8;
     }
   }
 
@@ -60,36 +82,58 @@ export class AppComponent implements AfterContentInit {
     localStorage.setItem("tutorial", JSON.stringify(this.TUTORIAL));
   }
 
-  getRandomMonster(){
-    if(this.isCurrentMonsterDead)
-    {
+  getRandomMonster() {
+    if (this.isCurrentMonsterDead) {
       this.isCurrentMonsterDead = false;
       this.lastMonster = this.currentMonster;
-      while(this.currentMonster == this.lastMonster)
-      {
+      while (this.currentMonster == this.lastMonster) {
         this.currentMonster = this.MONSTERS.getRandomMonster();
       }
     }
     return this.currentMonster;
   }
 
-  getCurrentLevel()
-  {
+  getCurrentLevel() {
     return this.PLAYER.monsterLevel;
   }
-  getCurrentMonsterHealth()
-  {
+  getCurrentMonsterHealth() {
     let monsterHealth = 10;
-    for(let i = 0; i < this.getCurrentLevel(); i++)
-    {
-      monsterHealth += monsterHealth* 0.5;
+    for (let i = 0; i < this.getCurrentLevel(); i++) {
+      monsterHealth += monsterHealth * 0.5;
     }
     return monsterHealth;
   }
 
-  monsterDead()
-  {
+  getPlayerPower() {
+    return this.PLAYER.power;
+  }
+
+  monsterDead() {
     this.isCurrentMonsterDead = true;
     this.PLAYER.monsterLevel++;
+    this.PLAYER.coins += this.getCurrentMonsterHealth() * 0.1;
+    this.saveProgress();
+  }
+
+  getCurrentCoins() {
+    return this.PLAYER.coins;
+  }
+
+  getnextPowerUpgrade() {
+    return this.nextPowerUpgrade;
+  }
+
+  saveProgress() {
+    localStorage.setItem("player", JSON.stringify(this.PLAYER));
+  }
+
+  powerUpgrade() {
+    if (this.PLAYER.coins >= this.nextPowerUpgrade) {
+      this.PLAYER.coins -= this.nextPowerUpgrade;
+      this.PLAYER.power += this.getPlayerPower() * 0.2;
+      this.nextPowerUpgrade += this.getnextPowerUpgrade() * 0.8;
+      this.PLAYER.powerLevel++;
+      this.saveProgress();
+    }
   }
 }
