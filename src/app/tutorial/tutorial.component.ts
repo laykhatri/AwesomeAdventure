@@ -10,7 +10,7 @@ export class TutorialComponent implements OnInit {
 
 @Input() PAGE!:number;
 @Output() changePage=new EventEmitter<number>();
-
+@Output() EndTutorial=new EventEmitter<void>();
   constructor() { }
 
   ngOnInit(): void {
@@ -20,7 +20,16 @@ export class TutorialComponent implements OnInit {
   }
 
   nextPage(){
+    if(this.PAGE==2)
+    {
+      this.EndOfTutorial();
+    }
     this.PAGE++;
     this.changePage.emit(this.PAGE);
+    
+  }
+
+  EndOfTutorial(){
+    this.EndTutorial.emit();
   }
 }

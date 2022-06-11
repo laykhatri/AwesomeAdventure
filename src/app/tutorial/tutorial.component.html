@@ -8,10 +8,22 @@
         <div *ngIf="PAGE == 1" id="Page1">
             <div class="fs-3">
                 This Might not be your place to come. But its your DESTINY to come here.
+                <br>
+                You need to fight those monsters. Become the ultimate Hero.
+            </div>
+        </div>
+        <div *ngIf="PAGE == 2" id="Page2">
+            <div class="fs-3">
+                Press 'H' to Hit.
+                <br>
+                Press 'U' to Upgrade.
+                <br>
+                Press 'N' to Next Level.
             </div>
         </div>
     </div>
     <div class="d-flex justify-content-center my-3">
+        <button (click)="EndOfTutorial()" class="btn btn-seconday" >Skip</button>
         <button (click)="nextPage()" class="btn btn-success">Next</button>
         </div>
 </div>

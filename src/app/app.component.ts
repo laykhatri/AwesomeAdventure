@@ -12,9 +12,23 @@ export class AppComponent {
   TUTORIAL!: tutorial;
 
   constructor() {
-    this.TUTORIAL = new tutorial();
+    if (localStorage.getItem("tutorial") != null) {
+      this.TUTORIAL = JSON.parse(localStorage.getItem("tutorial")!);
+    } else {
+      this.TUTORIAL = new tutorial();
+    }
   }
 
   @HostListener("window:keyup", ["$event"])
   onKeyUp(event: KeyboardEvent) {}
+
+  pageChanged(page: number) {
+    this.TUTORIAL.page = page;
+  }
+
+  EndOfTutorial() {
+    this.TUTORIAL.isTutorialDone = true;
+
+    localStorage.setItem("tutorial", JSON.stringify(this.TUTORIAL));
+  }
 }

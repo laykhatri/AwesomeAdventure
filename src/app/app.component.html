@@ -7,5 +7,7 @@
 </div>
 
 <div class="container gameboard">
-  <app-tutorial [PAGE]="TUTORIAL.page" *ngIf="!TUTORIAL.isTutorialDone"></app-tutorial>
+  <app-tutorial [PAGE]="TUTORIAL.page" (changePage)="pageChanged" (EndTutorial)="EndOfTutorial()" *ngIf="!TUTORIAL.isTutorialDone"></app-tutorial>
+
+  
 </div>
