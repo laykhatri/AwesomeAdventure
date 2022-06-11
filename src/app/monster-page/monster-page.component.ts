@@ -28,12 +28,12 @@ export class MonsterPageComponent implements OnInit, AfterContentChecked {
   getMonsterHealth(){
 
     const thealth:number = (this.currentHealth *100 / this.MonsterHealth);
-
-    if(thealth >= this.MonsterHealth*0.70)
+    
+    if(thealth >= 70)
     {
       return "width: " + thealth + "%; background-color: green;";
     }
-    else if(thealth >= this.MonsterHealth*0.40)
+    else if(thealth >= 25)
     {
       return "width: " + thealth + "%; background-color: yellow;";
     }
