@@ -69,6 +69,7 @@ export class AppComponent implements AfterContentInit {
     if (this.TUTORIAL.isTutorialDone) {
       if (event.key == "H" || event.key == "h") {
         this.monster.attack();
+        
       } else if (event.key == "U" || event.key == "u") {
         this.powerUpgrade();
       }

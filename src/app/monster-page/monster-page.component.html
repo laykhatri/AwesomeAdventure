@@ -1,6 +1,6 @@
 <div class="container my-4">
     <div class="d-flex justify-content-center my-3">
-        <img [src]="MONSTER" width="300">
+        <img [src]="MONSTER" width="300" [@gotHIT]="isHit?true:false">
     </div>
     <div class="health my-3">
         <div class="healthbar" [style]="getMonsterHealth()"></div>
