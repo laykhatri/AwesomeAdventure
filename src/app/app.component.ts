@@ -7,6 +7,7 @@ import {
 import { monsters } from "./_helper/monster.helper";
 import { player } from "./_helper/player.helper";
 import { tutorial } from "./_helper/tutorial.helper";
+import { playerstats } from "./_helper/playerstats.helper";
 import { MonsterPageComponent } from "./monster-page/monster-page.component";
 
 @Component({
@@ -24,6 +25,7 @@ export class AppComponent implements AfterContentInit {
   TUTORIAL!: tutorial;
   MONSTERS!: monsters;
   PLAYER!: player;
+  PLAYERSTATS!: playerstats;
 
   isCurrentMonsterDead: boolean = true;
   currentMonster: string = "";
@@ -43,6 +45,13 @@ export class AppComponent implements AfterContentInit {
       this.populatePlayerProgress();
     } else {
       this.PLAYER = new player();
+    }
+    if(localStorage.getItem("playerStats")!=null){
+      this.PLAYERSTATS = JSON.parse(localStorage.getItem("playerStats")!);
+    }
+    else
+    {
+      this.PLAYERSTATS = new playerstats();
     }
   }
   ngAfterContentInit(): void {
@@ -112,6 +121,11 @@ export class AppComponent implements AfterContentInit {
     this.isCurrentMonsterDead = true;
     this.PLAYER.monsterLevel++;
     this.PLAYER.coins += this.getCurrentMonsterHealth() * 0.1;
+    this.PLAYERSTATS.lifetimeCoins += this.getCurrentMonsterHealth() * 0.1;
+    this.PLAYERSTATS.lifetimeKills++;
+    if(this.PLAYER.monsterLevel>this.PLAYERSTATS.maxMonsterLevel){
+      this.PLAYERSTATS.maxMonsterLevel=this.PLAYER.monsterLevel;
+    }
     this.saveProgress();
   }
 
@@ -125,6 +139,7 @@ export class AppComponent implements AfterContentInit {
 
   saveProgress() {
     localStorage.setItem("player", JSON.stringify(this.PLAYER));
+    localStorage.setItem("playerStats", JSON.stringify(this.PLAYERSTATS));
   }
 
   powerUpgrade() {
@@ -135,5 +150,18 @@ export class AppComponent implements AfterContentInit {
       this.PLAYER.powerLevel++;
       this.saveProgress();
     }
+  }
+
+  getTopLevel(){
+    return this.PLAYERSTATS.maxMonsterLevel;
+  }
+
+  getTotalKills(){
+    return this.PLAYERSTATS.lifetimeKills;
+  }
+
+  getTotalCoins()
+  {
+    return this.PLAYERSTATS.lifetimeCoins;
   }
 }
