@@ -1,9 +1,32 @@
 import { Component, Input, OnInit, Output, EventEmitter , AfterContentChecked} from '@angular/core';
+import { trigger, state, style, animate, transition, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-monster-page',
   templateUrl: './monster-page.component.html',
-  styleUrls: ['./monster-page.component.css']
+  styleUrls: ['./monster-page.component.css'],
+  animations:[
+    trigger('gotHIT',[
+      state('true',style({})),
+      state('false',style({})),
+      transition('false => true',[
+        animate('0.5s',keyframes([
+          style({transform: 'translate(1px, 1px) rotate(0deg)'}),
+          style({transform: 'translate(-1px, -2px) rotate(-1deg)'}),
+          style({transform: 'translate(-3px, 0px) rotate(1deg)'}),
+          style({transform: 'translate(3px, 2px) rotate(0deg)'}),
+          style({transform: 'translate(1px, -1px) rotate(1deg)'}),
+          style({transform: 'translate(-1px, 2px) rotate(-1deg)'}),
+          style({transform: 'translate(-3px, 1px) rotate(0deg)'}),
+          style({transform: 'translate(3px, 1px) rotate(-1deg)'}),
+          style({transform: 'translate(-1px, -1px) rotate(1deg)'}),
+          style({transform: 'translate(1px, 2px) rotate(0deg)'}),
+          style({transform: 'translate(1px, -2px) rotate(-1deg)'}),          
+        ])),
+        
+      ])
+    ]),
+  ]
 })
 export class MonsterPageComponent implements OnInit, AfterContentChecked {
 
@@ -11,7 +34,11 @@ export class MonsterPageComponent implements OnInit, AfterContentChecked {
   @Input() MonsterHealth!:number;
   @Output() MonsterDead = new EventEmitter<boolean>();
   @Input() HitPower!:number;
+  @Input() currentLevel!:number;
+  @Input() nextPrestige!:number;
+  @Output() PrestigeTriggered = new EventEmitter<boolean>();
 
+  isHit: boolean = false;
   currentHealth:number = 0;
   
   constructor() { }
@@ -46,10 +73,22 @@ export class MonsterPageComponent implements OnInit, AfterContentChecked {
 
   attack()
   {
+    this.isHit = true;
+    setTimeout(() => {
+      this.isHit = false;
+    },300);
     this.currentHealth -= this.HitPower;
     if(this.currentHealth <= 0)
     {
       this.MonsterDead.emit(true);
+    }
+  }
+
+  prestige()
+  {
+    if(this.currentLevel > this.nextPrestige)
+    {
+      this.PrestigeTriggered.emit(true);
     }
   }
 }

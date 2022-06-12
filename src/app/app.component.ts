@@ -7,6 +7,7 @@ import {
 import { monsters } from "./_helper/monster.helper";
 import { player } from "./_helper/player.helper";
 import { tutorial } from "./_helper/tutorial.helper";
+import { playerstats } from "./_helper/playerstats.helper";
 import { MonsterPageComponent } from "./monster-page/monster-page.component";
 
 @Component({
@@ -24,6 +25,7 @@ export class AppComponent implements AfterContentInit {
   TUTORIAL!: tutorial;
   MONSTERS!: monsters;
   PLAYER!: player;
+  PLAYERSTATS!: playerstats;
 
   isCurrentMonsterDead: boolean = true;
   currentMonster: string = "";
@@ -44,6 +46,13 @@ export class AppComponent implements AfterContentInit {
     } else {
       this.PLAYER = new player();
     }
+    if(localStorage.getItem("playerStats")!=null){
+      this.PLAYERSTATS = JSON.parse(localStorage.getItem("playerStats")!);
+    }
+    else
+    {
+      this.PLAYERSTATS = new playerstats();
+    }
   }
   ngAfterContentInit(): void {
     this.MONSTERS = new monsters();
@@ -53,13 +62,15 @@ export class AppComponent implements AfterContentInit {
     ) {
       this.PLAYER = new player();
     }
+
   }
 
-  @HostListener("window:keyup", ["$event"])
+  @HostListener("window:keydown", ["$event"])
   onKeyUp(event: KeyboardEvent) {
     if (this.TUTORIAL.isTutorialDone) {
       if (event.key == "H" || event.key == "h") {
         this.monster.attack();
+
       } else if (event.key == "U" || event.key == "u") {
         this.powerUpgrade();
       }
@@ -112,6 +123,11 @@ export class AppComponent implements AfterContentInit {
     this.isCurrentMonsterDead = true;
     this.PLAYER.monsterLevel++;
     this.PLAYER.coins += this.getCurrentMonsterHealth() * 0.1;
+    this.PLAYERSTATS.lifetimeCoins += this.getCurrentMonsterHealth() * 0.1;
+    this.PLAYERSTATS.lifetimeKills++;
+    if(this.PLAYER.monsterLevel>this.PLAYERSTATS.maxMonsterLevel){
+      this.PLAYERSTATS.maxMonsterLevel=this.PLAYER.monsterLevel;
+    }
     this.saveProgress();
   }
 
@@ -125,6 +141,7 @@ export class AppComponent implements AfterContentInit {
 
   saveProgress() {
     localStorage.setItem("player", JSON.stringify(this.PLAYER));
+    localStorage.setItem("playerStats", JSON.stringify(this.PLAYERSTATS));
   }
 
   powerUpgrade() {
@@ -134,6 +151,50 @@ export class AppComponent implements AfterContentInit {
       this.nextPowerUpgrade += this.getnextPowerUpgrade() * 0.8;
       this.PLAYER.powerLevel++;
       this.saveProgress();
+    }
+  }
+
+  getTopLevel(){
+    return this.PLAYERSTATS.maxMonsterLevel;
+  }
+
+  getTotalKills(){
+    return this.PLAYERSTATS.lifetimeKills;
+  }
+
+  getTotalCoins()
+  {
+    return this.PLAYERSTATS.lifetimeCoins;
+  }
+
+  getSuperCoin()
+  {
+    return this.PLAYER.superCoin;
+  }
+
+  getNextPrestige(lastPrestige:number)
+  {
+    if(lastPrestige%10)
+    {
+      return lastPrestige + (10-lastPrestige%10);
+    }
+    else
+    {
+      return lastPrestige + 10;
+    }
+  }
+
+  handlePrestrige(trigger:boolean)
+  {
+    if(trigger)
+    {
+      const currrentLevel = this.getCurrentLevel();
+      const superCoin = this.getSuperCoin()+1;
+      this.PLAYER = new player();
+      this.PLAYER.lastPrestige = currrentLevel;
+      this.PLAYER.superCoin= superCoin;
+      this.saveProgress();
+      window.location.reload();
     }
   }
 }

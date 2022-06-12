@@ -1,6 +1,6 @@
 <div class="container my-4">
     <div class="d-flex justify-content-center my-3">
-        <img [src]="MONSTER" width="300">
+        <img [src]="MONSTER" width="300" [@gotHIT]="isHit?true:false">
     </div>
     <div class="health my-3">
         <div class="healthbar" [style]="getMonsterHealth()"></div>
@@ -8,7 +8,8 @@
 
     <div class="actionButtons container my-3">
         <div class="d-flex justify-content-center">
-            <button class="btn btn-success" (click)="attack()">Attack</button>
+            <button class="btn btn-success mx-3" (click)="attack()">Attack</button>
+            <button *ngIf="currentLevel>=nextPrestige" (click)="prestige()" class="btn btn-warning mx-3">Prestige</button>
         </div>
         
     </div>
