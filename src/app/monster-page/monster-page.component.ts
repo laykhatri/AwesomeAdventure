@@ -34,6 +34,9 @@ export class MonsterPageComponent implements OnInit, AfterContentChecked {
   @Input() MonsterHealth!:number;
   @Output() MonsterDead = new EventEmitter<boolean>();
   @Input() HitPower!:number;
+  @Input() currentLevel!:number;
+  @Input() nextPrestige!:number;
+  @Output() PrestigeTriggered = new EventEmitter<boolean>();
 
   isHit: boolean = false;
   currentHealth:number = 0;
@@ -73,7 +76,7 @@ export class MonsterPageComponent implements OnInit, AfterContentChecked {
     this.isHit = true;
     setTimeout(() => {
       this.isHit = false;
-    },500);
+    },300);
     this.currentHealth -= this.HitPower;
     if(this.currentHealth <= 0)
     {
@@ -81,5 +84,11 @@ export class MonsterPageComponent implements OnInit, AfterContentChecked {
     }
   }
 
-  
+  prestige()
+  {
+    if(this.currentLevel > this.nextPrestige)
+    {
+      this.PrestigeTriggered.emit(true);
+    }
+  }
 }

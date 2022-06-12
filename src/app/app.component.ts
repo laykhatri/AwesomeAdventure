@@ -62,14 +62,15 @@ export class AppComponent implements AfterContentInit {
     ) {
       this.PLAYER = new player();
     }
+
   }
 
-  @HostListener("window:keyup", ["$event"])
+  @HostListener("window:keydown", ["$event"])
   onKeyUp(event: KeyboardEvent) {
     if (this.TUTORIAL.isTutorialDone) {
       if (event.key == "H" || event.key == "h") {
         this.monster.attack();
-        
+
       } else if (event.key == "U" || event.key == "u") {
         this.powerUpgrade();
       }
@@ -164,5 +165,36 @@ export class AppComponent implements AfterContentInit {
   getTotalCoins()
   {
     return this.PLAYERSTATS.lifetimeCoins;
+  }
+
+  getSuperCoin()
+  {
+    return this.PLAYER.superCoin;
+  }
+
+  getNextPrestige(lastPrestige:number)
+  {
+    if(lastPrestige%10)
+    {
+      return lastPrestige + (10-lastPrestige%10);
+    }
+    else
+    {
+      return lastPrestige + 10;
+    }
+  }
+
+  handlePrestrige(trigger:boolean)
+  {
+    if(trigger)
+    {
+      const currrentLevel = this.getCurrentLevel();
+      const superCoin = this.getSuperCoin()+1;
+      this.PLAYER = new player();
+      this.PLAYER.lastPrestige = currrentLevel;
+      this.PLAYER.superCoin= superCoin;
+      this.saveProgress();
+      window.location.reload();
+    }
   }
 }
