@@ -74,6 +74,12 @@ export class AppComponent implements AfterContentInit {
       } else if (event.key == "U" || event.key == "u") {
         this.powerUpgrade();
       }
+      else if(event.key == "P" || event.key == "p"){
+        if(this.getCurrentLevel() >= this.getNextPrestige(this.PLAYER.lastPrestige))
+        {
+          this.handlePrestrige(true);
+        }
+      }
     }
   }
 
@@ -184,6 +190,11 @@ export class AppComponent implements AfterContentInit {
     }
   }
 
+  getLastPrestige()
+  {
+    return this.PLAYER.lastPrestige;
+  }
+
   handlePrestrige(trigger:boolean)
   {
     if(trigger)
@@ -194,6 +205,15 @@ export class AppComponent implements AfterContentInit {
       this.PLAYER.lastPrestige = currrentLevel;
       this.PLAYER.superCoin= superCoin;
       this.saveProgress();
+      window.location.reload();
+    }
+  }
+
+  resetEverything()
+  {
+    if(confirm("Are you sure you want to reset everything? This will delete all your progress and you will start from scratch."))
+    {
+      localStorage.clear();
       window.location.reload();
     }
   }

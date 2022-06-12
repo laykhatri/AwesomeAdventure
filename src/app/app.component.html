@@ -3,6 +3,7 @@
     <div class="fw-bold fs-1">
       {{ title }}
     </div>
+    <fa-icon [icon]="['fas','info-circle']"></fa-icon>
   </div>
 </div>
 
@@ -16,36 +17,75 @@
 
   <div *ngIf="TUTORIAL.isTutorialDone" class="gamearea my-5">
     <div class="container my-3">
-      <div class="d-flex justify-content-center outline-primary py-4 my-3" >
-        <div class="fw-bold fs-3 mx-2">Top level: <span class="fw-normal">{{ getTopLevel() }}</span></div>
-        <div class="fw-bold fs-3 mx-2">Total Kills: <span class="fw-normal">{{getTotalKills()}}</span></div>
-        <div class="fw-bold fs-3 mx-2">Total Coins: <span class="fw-normal">{{getTotalCoins() | number:'1.0-0'}}</span></div>
-        <div class="fw-bold fs-3 mx-2">Next Prestrige: <span class="fw-normal">{{getNextPrestige(getCurrentLevel()) | number:'1.0-0'}}</span></div>
+      <div class="d-flex row justify-content-center outline-primary py-4 my-3">
+        <div class="fw-bold fs-3 mx-2 col">
+          Top level: <span class="fw-normal">{{ getTopLevel() }}</span>
+        </div>
+        <div class="fw-bold fs-3 mx-2 col">
+          Total Kills: <span class="fw-normal">{{ getTotalKills() }}</span>
+        </div>
+        <div class="fw-bold fs-3 mx-2 col">
+          Total Coins:
+          <span class="fw-normal">{{ getTotalCoins() | number: "1.0-0" }}</span>
+        </div>
+        <div class="fw-bold fs-3 mx-2 col">
+          Next Prestrige:
+          <span class="fw-normal">{{
+            getNextPrestige(getLastPrestige()) | number: "1.0-0"
+          }}</span>
+        </div>
+      </div>
+      <div class="d-flex row justify-content-center">
+        
+          <button (click)="resetEverything()" class="btn col-lg-2 col-md-6 col btn-danger">
+            Reset
+          </button>
+        
       </div>
       <div class="d-flex justify-content-center">
         <div class="fw-bold fs-3">Level: {{ getCurrentLevel() }}</div>
       </div>
     </div>
 
-    <app-monster-page (PrestigeTriggered)="handlePrestrige($event)" (MonsterDead)="monsterDead()" [HitPower]="getPlayerPower()"  [MonsterHealth]="getCurrentMonsterHealth()" [currentLevel]="getCurrentLevel()" [nextPrestige]="getNextPrestige(PLAYER.lastPrestige)" [MONSTER]="getRandomMonster()"></app-monster-page>
+    <app-monster-page
+      (PrestigeTriggered)="handlePrestrige($event)"
+      (MonsterDead)="monsterDead()"
+      [HitPower]="getPlayerPower()"
+      [MonsterHealth]="getCurrentMonsterHealth()"
+      [currentLevel]="getCurrentLevel()"
+      [nextPrestige]="getNextPrestige(PLAYER.lastPrestige)"
+      [MONSTER]="getRandomMonster()"
+    ></app-monster-page>
 
     <div class="container my-3">
       <div class="d-flex justify-content-center">
         <div class="mx-2">
-          <span class="fw-bold fs-4">Coins: &nbsp;</span> <span class="fs-4">{{ getCurrentCoins() | number: '1.0-0' }}</span> 
+          <span class="fw-bold fs-4">Coins: &nbsp;</span>
+          <span class="fs-4">{{ getCurrentCoins() | number: "1.0-0" }}</span>
         </div>
         <div class="mx-2">
-          <span class="fw-bold fs-4">Power: &nbsp;</span> <span class="fs-4">{{ getPlayerPower() | number: '1.0-0' }}</span>
+          <span class="fw-bold fs-4">Power: &nbsp;</span>
+          <span class="fs-4">{{ getPlayerPower() | number: "1.0-0" }}</span>
         </div>
         <div class="mx-2">
-          <span class="fw-bold fs-4">Super Coin: &nbsp;</span> <span class="fs-4">{{ getSuperCoin() | number: '1.0-0' }}</span>
+          <span class="fw-bold fs-4">Super Coin: &nbsp;</span>
+          <span class="fs-4">{{ getSuperCoin() | number: "1.0-0" }}</span>
         </div>
       </div>
     </div>
     <div class="container my-3">
       <div class="d-flex justify-content-center align-items-center">
-        <button (click)="powerUpgrade()" [disabled]="getCurrentCoins()>= getnextPowerUpgrade()? false:true" class="btn btn-primary mx-2">Upgrade Power</button>
-        <span class="fw-bold fs-3" > Cost: </span><span class="fs-4 mx-2"> {{ getnextPowerUpgrade() | number: '1.0-0' }}</span>
+        <button
+          (click)="powerUpgrade()"
+          [disabled]="getCurrentCoins() >= getnextPowerUpgrade() ? false : true"
+          class="btn btn-primary mx-2"
+        >
+          Upgrade Power
+        </button>
+        <span class="fw-bold fs-3"> Cost: </span
+        ><span class="fs-4 mx-2">
+          {{ getnextPowerUpgrade() | number: "1.0-0" }}</span
+        >
       </div>
     </div>
   </div>
